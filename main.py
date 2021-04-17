@@ -43,7 +43,7 @@ def init(players: list, cards: list, deck: Deck, board: Board):
 			player.draw_a_card(deck)
 	print_players_d(players)
 	# init board
-	board = Board(players, [], random.choice(players))
+	board = Board(players, random.choice(players))
 
 	return players, cards, deck, board
 
@@ -80,6 +80,16 @@ def play_player_in_turn(board: Board):
 	player = board.player_in_turn
 	board.theme = input(player.name + ", scegli il tema: ")
 
+def play_a_card(board: Board, player: Player):
+	""" Player chooses a card in his hand to play
+
+	Args:
+		board (Board): board game
+		player (Player): player playing
+	"""
+	card_idx = int(input("Gioca una carta: "))
+	board.play_a_card(player.cards[card_idx], player)
+
 def game(players, cards, deck, board):
 	# init game
 	players, cards, deck, board = init(players, cards, deck, board)
@@ -88,6 +98,11 @@ def game(players, cards, deck, board):
 	while True:
 		# il giocatore inizia scegliendo il tema
 		play_player_in_turn(board)
+
+		# i giocatori, a turno, giocano la propria carta
+		for player in players:
+			print_hand(player)
+			play_a_card(board, player)
 
 players = []
 cards = []

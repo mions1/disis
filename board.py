@@ -3,7 +3,7 @@ from card import Card
 
 class Board():
 	
-	def __init__(self, players: list, cards: list, player_in_turn: Player):
+	def __init__(self, players: list, player_in_turn: Player):
 		""" Board defines the board of the game.
 
 		Args:
@@ -12,8 +12,19 @@ class Board():
 			player_in_turn (Player): player who chose the theme
 		"""
 		self.players = players
-		self.cards = cards
+		self.cards = dict()
 		self.player_in_turn = player_in_turn
+
+	def play_a_card(self, card: Card, player: Player):
+		""" Add the player's card to the played cards around the board
+
+		Args:
+			card (Card): played card
+			player (Player): player who plays the card
+		"""
+		card.position = len(self.cards)+1
+		self.cards[player] = card
+		player.play_a_card(card)
 
 	def get_ranking(self):
 		""" Get ranking, so a players (keys) dict in ascending order by 

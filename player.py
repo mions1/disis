@@ -27,6 +27,20 @@ class Player():
 		card.owner = self
 		self.cards.append(card)
 
+	def play_a_card(self, card: Card):
+		""" Play a card, so the chosen card in the hand
+
+		Args:
+			card (Card): chosen card
+
+		Returns:
+			bool: True if it's okay, False otherwise
+		"""
+		if card in self.cards:
+			card.removed = True
+			return True
+		return False
+
 	def __str__(self):
 		text = str(self.id) + " "
 		text += self.name + " "
