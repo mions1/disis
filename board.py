@@ -13,6 +13,7 @@ class Board():
 		"""
 		self.players = players
 		self.cards = dict()
+		self.votes = dict()
 		self.player_in_turn = player_in_turn
 
 	def play_a_card(self, card: Card, player: Player):
@@ -40,6 +41,28 @@ class Board():
 		rank = dict(sorted(rank.items(), key=lambda item: item[1], reverse=True))
 
 		return rank
+
+	def vote(self, player: Player, vote):
+		""" Let the player vote the played cards
+
+		Args:
+			player (Player): player who votes
+			vote (int): voted card (its position on the table)
+		"""
+		self.votes[player] = self.get_card_in_position(vote)
+
+	def get_card_in_position(self, position: int):
+		""" Get the card on the specified position (position on the table)
+
+		Args:
+			position (int): position of the card on the table
+
+		Returns:
+			Card: voted card
+		"""
+		for card in self.cards.values():
+			if card.position == position:
+				return card
 
 	def __str__(self):
 		text = "["

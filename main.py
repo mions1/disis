@@ -90,6 +90,16 @@ def play_a_card(board: Board, player: Player):
 	card_idx = int(input("Gioca una carta: "))
 	board.play_a_card(player.cards[card_idx], player)
 
+def vote(board: Board, player: Player):
+	""" Let the players vote the played cards
+
+	Args:
+		board (Board): board game
+		player (Player): Player who have to vote
+	"""
+	voto = int(input(player.name + ", vota la carta: "))
+	board.vote(player, voto)
+
 def game(players, cards, deck, board):
 	# init game
 	players, cards, deck, board = init(players, cards, deck, board)
@@ -102,7 +112,16 @@ def game(players, cards, deck, board):
 		# i giocatori, a turno, giocano la propria carta
 		for player in players:
 			print_hand(player)
-			play_a_card(board, player)
+			play_a_card(board, player)		
+			
+		# mostra il tavolo con le carte giocate
+		print_board(board)
+
+		# FIXME: Vieta ad un giocatore di votare se stesso
+		# i giocatori (tranne che quello in turno) votano
+		for player in players:
+			if player != board.player_in_turn:
+				vote(board, player)
 
 players = []
 cards = []
