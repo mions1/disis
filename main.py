@@ -58,7 +58,7 @@ def print_board(board: Board):
 		print(player.name, score)
 
 	print("\nLe carte in gioco sono: ")
-	for card in board.cards:
+	for player,card in board.cards.items():
 		print(card)
 
 def print_hand(player: Player):
@@ -89,6 +89,7 @@ def play_a_card(board: Board, player: Player):
 	"""
 	card_idx = int(input("Gioca una carta: "))
 	board.play_a_card(player.cards[card_idx], player)
+	print(board.cards)
 
 def vote(board: Board, player: Player):
 	""" Let the players vote the played cards
@@ -99,6 +100,55 @@ def vote(board: Board, player: Player):
 	"""
 	voto = int(input(player.name + ", vota la carta: "))
 	board.vote(player, voto)
+
+def print_after_vote(board: Board):
+	""" Print results after voting phase
+
+	Args:
+		board (Board): board game
+	"""
+	print("\nIl giocatore " + str(board.player_in_turn.name) 
+		+ " ha scelto il tema " + board.theme
+		+ " e la carta " + str(board.cards[board.player_in_turn]) 
+		+ "\n")
+	
+	points = board.assign_points()
+	if board.player_in_turn in points:
+		print("Il giocatore in turno ha guadagnato 3 punti!!")
+		del points[board.player_in_turn]
+	
+	for player, value in points.items():
+		score = 0
+		if 0 in value:
+			print(player.name + " ha indovinato la carta vincente", end="")
+			value.remove(0)
+			score += 3
+		if len(value) > 0 and score == 3:
+			print(", inoltre lo ha votato: ")
+		if len(value) > 0 and score == 0:
+			print("\n" + player.name + " lo ha votato:")
+		for p in value:
+			print(p.name)
+			score += 1
+		print("Facendo cosi " + str(score) + " punti")
+	
+def clean_board(board: Board, players: list, deck: Deck):
+	""" Clean the board after every turn.
+	    So, remove used cards from both players hand and board.
+		All players draw a card.
+
+	Args:
+		board (Board): board game
+		players (list): players list
+	"""
+	# remove cards from hands
+	for player in players:
+		player.remove_cards()
+	# reset board
+	board.reset()
+	# draw
+	for player in players:
+		player.draw_a_card(deck)
 
 def game(players, cards, deck, board):
 	# init game
@@ -122,6 +172,15 @@ def game(players, cards, deck, board):
 		for player in players:
 			if player != board.player_in_turn:
 				vote(board, player)
+
+		# stampa i risultati
+		print_after_vote(board)
+
+		# resetta il tavolo e pesca le carte
+		clean_board(board, players, deck)
+
+		# ripeti
+
 
 players = []
 cards = []

@@ -41,6 +41,13 @@ class Player():
 			return True
 		return False
 
+	def remove_cards(self):
+		""" Remove used card in this turn before the next
+		"""
+		for card in self.cards:
+			if card.removed:
+				self.cards.remove(card)
+
 	def __str__(self):
 		text = str(self.id) + " "
 		text += self.name + " "
@@ -48,4 +55,5 @@ class Player():
 		text += "["
 		for card in self.cards:
 			text += str(card) + ", "
+		text += "]"
 		return text

@@ -15,6 +15,7 @@ class Board():
 		self.cards = dict()
 		self.votes = dict()
 		self.player_in_turn = player_in_turn
+		self.theme = ""
 
 	def play_a_card(self, card: Card, player: Player):
 		""" Add the player's card to the played cards around the board
@@ -63,6 +64,45 @@ class Board():
 		for card in self.cards.values():
 			if card.position == position:
 				return card
+
+	def reset(self):
+		""" Clear the board removing cards, theme, votes and selecting the new player
+		    in turn.
+		"""
+		self.cards = dict()
+		self.votes = dict()
+		self.player_in_turn = self.players[(self.player_in_turn.id + 1) % len(self.players)]
+		self.theme = ""
+
+	def assign_points(self):
+		""" Assing points according to the results.
+
+		Returns:
+			dict: results after the turn
+		"""
+		card_in_turn = self.cards[self.player_in_turn]
+		points = dict()
+		winners = 0
+		for player, voted_card in self.votes.items():
+			# player has voted the right card, so (MAYBE) the player_in_turn 
+			# and him gain 3 points
+			if voted_card == card_in_turn:
+				winners += 1
+				if player not in points:
+					points[player] = []
+				points[player].append(0)
+				player.score += 3
+			else:
+				if voted_card.owner not in points:
+					points[voted_card.owner] = []
+				points[voted_card.owner].append(player)
+				voted_card.owner.score += 1
+		
+		if winners > 0 and winners < len(self.players)-1:
+			points[self.player_in_turn] = 0
+			self.player_in_turn.score += 3
+		
+		return points
 
 	def __str__(self):
 		text = "["
